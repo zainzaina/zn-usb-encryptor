@@ -1,128 +1,196 @@
-# Secure USB Encryption Tool
+Secure USB Encryption Tool
 
-برنامج بسيط بواجهة رسومية لحماية الملفات باستخدام مفتاح موجود على فلاش USB وكلمة مرور محلية.
+A lightweight, GUI-based file encryption tool that secures files using two-factor protection:
+a user-defined password and a cryptographic key stored on a USB flash drive.
 
-**وصف المشروع:**
-- أداة GUI تعتمد على `tkinter` لتشفير/فك تشفير ملفات باستخدام مكتبة `cryptography`.
-- يعتمد التشفير على مفتاح ثانوي محفوظ على فلاش USB (`usb.key`) بالإضافة إلى كلمة المرور: المفتاح مشتق من دمج كلمة المرور ومحتوى ملف المفتاح.
+This project is designed for personal and educational use, demonstrating practical file encryption, key derivation, and physical key-based access control.
 
-**مميزاته:**
-- قفل/فتح التطبيق باستخدام كلمة مرور + ملف مفتاح على USB.
-- تشفير ملف واحد ثم استبداله بالنسخة المشفرة.
-- فك تشفير ملف مشفّر إذا كان المفتاح وكلمة المرور صحيحين.
-- إقفال تلقائي عند إزالة الفلاش.
-- سجل نشاطات بسيط في `activity.log`.
+Overview
 
-**المتطلبات:**
-- Python 3.8+
-- الحزم: `cryptography` (ثبّتها باستخدام `pip install cryptography`).
-- `tkinter` عادةً مثبتة مع بايثون على معظم الأنظمة.
+Secure USB Encryption Tool encrypts and decrypts files by deriving a strong encryption key from:
 
-**تثبيت وتشغيل (Windows):**
-1. أنشئ بيئة افتراضية (اختياري):
+A user password
 
-```powershell
+A binary key file (usb.key) stored on a removable USB drive
+
+Access to encrypted files is impossible unless both factors are present.
+
+The application provides a simple graphical interface built with tkinter and uses the cryptography library for secure encryption primitives.
+
+Key Features
+
+Two-factor access control (Password + USB key file)
+
+GUI-based encryption and decryption
+
+Encrypts a single file and replaces it with the encrypted version
+
+Decrypts files only when the correct password and USB key are present
+
+Automatically locks when the USB drive is removed
+
+Manual lock/unlock controls
+
+Basic activity logging (activity.log)
+
+Optional standalone Windows executable build
+
+Security Model (High-Level)
+
+Encryption keys are never stored on disk
+
+Final encryption key is derived from:
+
+User password
+
+Contents of usb.key
+
+Removing the USB drive immediately revokes access
+
+Loss of the USB key or password results in permanent data loss
+
+This tool is intended for learning and personal use.
+It is not a replacement for enterprise-grade disk encryption solutions.
+
+Requirements
+
+Python 3.8 or later
+
+cryptography
+
+tkinter (included with most Python installations)
+
+Install dependencies:
+
+pip install cryptography
+
+
+Or:
+
+pip install -r requirements.txt
+
+Installation & Usage (Windows)
+1. (Optional) Create a virtual environment
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install cryptography
-```
+pip install -r requirements.txt
 
-2. شغّل الواجهة:
-
-```powershell
+2. Run the application
 python secure_encryptor_gui.py
-```
 
-**إعداد مفتاح USB (مفتاحك):**
-- افصل فلاش USB وارْفع حرف محرك الأقراص (مثلاً `E:`). الملف المطلوب هو `usb.key` ويجب وضعه في جذر الفلاش أو تعديل مسار `USB_KEY_PATH` في ملف `secure_encryptor_gui.py`.
+USB Key Setup
 
-مثال إنشاء ملف مفتاح عشوائي باستخدام بايثون:
+The application requires a binary key file named usb.key stored on a USB flash drive.
 
-```powershell
+Create the USB key (Python)
 python - <<'PY'
 import os
 open('E:/usb.key','wb').write(os.urandom(32))
 print('usb.key created on E:')
 PY
-```
 
-أو باستخدام PowerShell:
+Create the USB key (PowerShell)
+$bytes = New-Object byte[] 32
+(New-Object System.Security.Cryptography.RNGCryptoServiceProvider).GetBytes($bytes)
+[IO.File]::WriteAllBytes('E:\usb.key',$bytes)
 
-```powershell
-$bytes = New-Object byte[] 32; (New-Object System.Security.Cryptography.RNGCryptoServiceProvider).GetBytes($bytes); [IO.File]::WriteAllBytes('E:\usb.key',$bytes)
-```
+Configure the path
 
-بعد إنشاء `usb.key`، تأكد من تعديل السطر العلوي في `secure_encryptor_gui.py` إذا كان حرف الفلاش مختلفًا:
+In secure_encryptor_gui.py, update the USB key path if needed:
 
-```python
-USB_KEY_PATH = "E:/usb.key"   # غيّري حرف الفلاشة عندك
-```
+USB_KEY_PATH = "E:/usb.key"
 
-**كيفية الاستخدام داخل الواجهة:**
-- أدخل **كلمة المرور** في الحقل ثم اضغط `Unlock` بعد توصيل فلاش USB (وموجود فيه `usb.key`).
-- بعد فتح التطبيق يمكنك استخدام `Encrypt File` و`Decrypt File` لاختيار ملف وتطبيق العملية.
-- اضغط `Lock` لقفل التطبيق يدوياً. التطبيق سيقفل أوتوماتيكياً عند إزالة الفلاش.
+GUI Workflow
 
-**ملاحظات أمان مهمة:**
-- لا تستخدم كلمات مرور ضعيفة. الأمان يعتمد على كلمة المرور ومحتوى `usb.key` معًا.
-- احتفظ بنسخة احتياطية من `usb.key` في مكان آمن إذا فقدت الفلاش فلن تتمكن من فك ملفاتك المشفّرة.
-- الملف يجري استبداله بالنسخة المشفّرة عند التشفير—أجرِ نسخاً احتياطية قبل التجربة إن لزم.
+Insert the USB flash drive containing usb.key
 
-**سجل النشاطات:**
-- الأنشطة تُسجَّل في `activity.log` داخل مجلد المشروع.
+Enter your password
 
-**المساهمة:**
-- تحسين تجربة المستخدم، إضافة دعم لتشفير مجلدات، أو إضافة خيار لفصل الملفات المشفّرة عن الملف الأصلي مرحب بها.
+Click Unlock
 
-**الرخصة:**
-- حرّ المشروع للاستخدام الشخصي والتعليمي. أضف رخصة واضحة إذا تريد نشره عامّاً.
+Use Encrypt File or Decrypt File
 
----
-إن أردت، أقدر أضيف مثال سكربت صغير لإنشاء `usb.key` تلقائياً أو ملف `requirements.txt`، أو أترجم الملف للإنجليزية أيضاً.
+Click Lock to manually lock the application
+(automatic lock occurs if the USB drive is removed)
 
-**أوامر مساعدة وملفات إضافية**
-- أضفت ملف `requirements.txt` وملفين لإنشاء `usb.key`:
-	- `create_usb_key.py` (بايثون)
-	- `create_usb_key.ps1` (PowerShell)
-- لتثبيت الحزم بسرعة استخدم:
+Activity Logging
 
-```powershell
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
+All major actions are logged to:
 
-- لإنشاء `usb.key` باستخدام السكربت بايثون (مثال مع الفلاش على حرف `E:`):
+activity.log
 
-```powershell
+
+Located in the project directory.
+
+Backup & Safety Notes
+
+Always back up your usb.key
+
+If the USB key or password is lost, encrypted files cannot be recovered
+
+Files are overwritten during encryption—create backups before testing
+
+Helper Scripts
+
+Included utility files:
+
+requirements.txt
+
+create_usb_key.py
+
+create_usb_key.ps1
+
+build_exe.ps1
+
+build_exe.bat
+
+Create a USB key via script:
+
 python create_usb_key.py --drive E:
-```
 
-- أو باستخدام سكربت PowerShell (كمسؤول أو من موجه PowerShell):
 
-```powershell
+Or:
+
 .\create_usb_key.ps1 -Drive 'E:'
-```
 
-تأكد من تعديل `USB_KEY_PATH` في `secure_encryptor_gui.py` إذا كان حرف محرك الفلاش مختلفاً.
+Building a Standalone EXE (Windows)
 
-**بناء ملف exe قابل للتشغيل (Windows)**
-- أضفت سكربتين لمساعدتك على بناء exe محلياً: `build_exe.ps1` و`build_exe.bat`.
-- المتطلبات: Python + `pip install -r requirements.txt` (يشتمل على `pyinstaller`).
-- لبناء EXE شغّل (PowerShell):
+Requirements:
 
-```powershell
+Python
+
+Dependencies from requirements.txt (includes pyinstaller)
+
+PowerShell
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 .\build_exe.ps1
-```
 
-- أو من موجه أوامر Windows (cmd):
-
-```bat
+Command Prompt
 \.venv\Scripts\activate.bat
 pip install -r requirements.txt
 build_exe.bat
-```
 
-- بعد نجاح البناء ستجد الملف التنفيذي في المجلد `dist\SecureEncryptor.exe`.
-- ملاحظة: لا يمكنني إضافة ملف exe مضغوط هنا تلقائياً — السكربتات توفر طريقة سهلة لبناءه محلياً على جهازك.
+
+Output:
+
+dist\SecureEncryptor.exe
+
+Contribution
+
+Contributions are welcome, including:
+
+UI/UX improvements
+
+Folder encryption support
+
+Non-destructive encryption modes
+
+Security hardening
+
+Please credit the original author and do not redistribute without acknowledgment.
+
+License
+
+Free for personal and educational use only.
+If you modify or reuse this project, attribution is required.
