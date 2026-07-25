@@ -1,196 +1,105 @@
-Secure USB Encryption Tool
+<div align="center">
 
-A lightweight, GUI-based file encryption tool that secures files using two-factor protection:
-a user-defined password and a cryptographic key stored on a USB flash drive.
+# 🔐 ZN USB Encryptor
 
-This project is designed for personal and educational use, demonstrating practical file encryption, key derivation, and physical key-based access control.
+### Secure your USB files with military-grade AES encryption.
 
-Overview
+<img src="https://media.giphy.com/media/juua9i2c2fA0AIp2iq/giphy.gif" width="650"/>
 
-Secure USB Encryption Tool encrypts and decrypts files by deriving a strong encryption key from:
+![Python](https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python)
+![Platform](https://img.shields.io/badge/Platform-Windows-success?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-orange?style=for-the-badge)
 
-A user password
+</div>
 
-A binary key file (usb.key) stored on a removable USB drive
+---
 
-Access to encrypted files is impossible unless both factors are present.
+# 🚀 Overview
 
-The application provides a simple graphical interface built with tkinter and uses the cryptography library for secure encryption primitives.
+ZN USB Encryptor is a Python desktop application that helps users protect files stored on USB drives using strong AES encryption.
 
-Key Features
+Designed with a clean graphical interface, the application allows users to encrypt and decrypt files quickly while keeping sensitive data safe.
 
-Two-factor access control (Password + USB key file)
+---
 
-GUI-based encryption and decryption
+# ✨ Features
 
-Encrypts a single file and replaces it with the encrypted version
+- 🔒 AES File Encryption
+- 🔓 Secure File Decryption
+- 💾 USB Drive Support
+- 🖥️ Easy-to-use GUI
+- ⚡ Fast Encryption
+- 🔑 Password Protection
+- 📂 Batch File Support
+- 🛡️ Secure Key Generation
 
-Decrypts files only when the correct password and USB key are present
+---
 
-Automatically locks when the USB drive is removed
+# 🛠 Built With
 
-Manual lock/unlock controls
-
-Basic activity logging (activity.log)
-
-Optional standalone Windows executable build
-
-Security Model (High-Level)
-
-Encryption keys are never stored on disk
-
-Final encryption key is derived from:
-
-User password
-
-Contents of usb.key
-
-Removing the USB drive immediately revokes access
-
-Loss of the USB key or password results in permanent data loss
-
-This tool is intended for learning and personal use.
-It is not a replacement for enterprise-grade disk encryption solutions.
-
-Requirements
-
-Python 3.8 or later
-
-cryptography
-
-tkinter (included with most Python installations)
-
-Install dependencies:
-
-pip install cryptography
+- Python
+- Tkinter
+- PyCryptodome
+- Cryptography
+- PyInstaller
 
 
-Or:
+---
+
+# 📦 Installation
+
+```bash
+git clone https://github.com/zainzaina/zn-usb-encryptor.git
+
+cd zn-usb-encryptor
 
 pip install -r requirements.txt
+```
 
-Installation & Usage (Windows)
-1. (Optional) Create a virtual environment
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+---
 
-2. Run the application
+# ▶️ Run
+
+```bash
 python secure_encryptor_gui.py
+```
 
-USB Key Setup
+---
 
-The application requires a binary key file named usb.key stored on a USB flash drive.
+# 📁 Project Structure
 
-Create the USB key (Python)
-python - <<'PY'
-import os
-open('E:/usb.key','wb').write(os.urandom(32))
-print('usb.key created on E:')
-PY
+```
+zn-usb-encryptor
+│
+├── secure_encryptor_gui.py
+├── create_usb_key.py
+├── requirements.txt
+├── README.md
+├── build_exe.bat
+├── build_exe.ps1
+└── dist/
+```
 
-Create the USB key (PowerShell)
-$bytes = New-Object byte[] 32
-(New-Object System.Security.Cryptography.RNGCryptoServiceProvider).GetBytes($bytes)
-[IO.File]::WriteAllBytes('E:\usb.key',$bytes)
+---
 
-Configure the path
+# 🎯 Use Cases
 
-In secure_encryptor_gui.py, update the USB key path if needed:
+- Secure USB flash drives
+- Protect confidential documents
+- Encrypt backups
+- Personal data protection
 
-USB_KEY_PATH = "E:/usb.key"
+---
 
-GUI Workflow
+# 👨‍💻 Author
 
-Insert the USB flash drive containing usb.key
+**Zain Abuzaid**
 
-Enter your password
+GitHub:
+https://github.com/zainzaina
 
-Click Unlock
+---
 
-Use Encrypt File or Decrypt File
+## ⭐ Support
 
-Click Lock to manually lock the application
-(automatic lock occurs if the USB drive is removed)
-
-Activity Logging
-
-All major actions are logged to:
-
-activity.log
-
-
-Located in the project directory.
-
-Backup & Safety Notes
-
-Always back up your usb.key
-
-If the USB key or password is lost, encrypted files cannot be recovered
-
-Files are overwritten during encryption—create backups before testing
-
-Helper Scripts
-
-Included utility files:
-
-requirements.txt
-
-create_usb_key.py
-
-create_usb_key.ps1
-
-build_exe.ps1
-
-build_exe.bat
-
-Create a USB key via script:
-
-python create_usb_key.py --drive E:
-
-
-Or:
-
-.\create_usb_key.ps1 -Drive 'E:'
-
-Building a Standalone EXE (Windows)
-
-Requirements:
-
-Python
-
-Dependencies from requirements.txt (includes pyinstaller)
-
-PowerShell
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-.\build_exe.ps1
-
-Command Prompt
-\.venv\Scripts\activate.bat
-pip install -r requirements.txt
-build_exe.bat
-
-
-Output:
-
-dist\SecureEncryptor.exe
-
-Contribution
-
-Contributions are welcome, including:
-
-UI/UX improvements
-
-Folder encryption support
-
-Non-destructive encryption modes
-
-Security hardening
-
-Please credit the original author and do not redistribute without acknowledgment.
-
-License
-
-Free for personal and educational use only.
-If you modify or reuse this project, attribution is required.
+If you found this project useful, consider giving it a ⭐ on GitHub!
